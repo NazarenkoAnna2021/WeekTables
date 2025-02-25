@@ -9,7 +9,7 @@ import { DataItem } from "../DataItem";
 
 interface IProps<T> {
     contentHeight: number;
-    data: T[],
+    data: (T & { SessionEndId?: string })[],
     isEditable?: boolean;
     scrollY: SharedValue<number>;
     selectedItem?: T,
@@ -50,7 +50,7 @@ export const HourItem = <T extends IData,>({ contentHeight, data, isEditable, sc
                     scrollY={scrollY}
                     overlappingIds={overlappingIds[item.Uid] || []}
                     selectedStartDate={selectedItem?.StartDateTime}
-                    key={item?.Uid}
+                    key={item?.SessionEndId || item?.Uid}
                     item={item}
                     onPress={onPress}
                     scrollOnDrag={scrollOnDrag}

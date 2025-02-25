@@ -21,7 +21,35 @@ const sessionsMock: ISession[] = [
         StartDateTime: '2025-02-25T10:30:00',
         Duration: 60,
         Name: 'Test'
-    }
+    },
+    {
+        Status: 'none',
+        Uid: '2',
+        StartDateTime: '2025-02-24T10:30:00',
+        Duration: 30,
+        Name: 'Test'
+    },
+    {
+        Status: 'none',
+        Uid: '3',
+        StartDateTime: '2025-02-24T13:10:00',
+        Duration: 120,
+        Name: 'Test'
+    },
+    {
+        Status: 'none',
+        Uid: '4',
+        StartDateTime: '2025-02-24T13:00:00',
+        Duration: 120,
+        Name: 'Test1'
+    },,
+    {
+        Status: 'none',
+        Uid: '5',
+        StartDateTime: '2025-02-24T22:00:00',
+        Duration: 180,
+        Name: 'Test1'
+    },
 ]
 
 export const WeekTableView: FC = observer(() => {
@@ -45,37 +73,25 @@ export const WeekTableView: FC = observer(() => {
     }, []);
 
     const onDeleteSession = useCallback((session?: ISession) => {
-        setSessions(sessions?.filter(item => !(
-            moment(item.StartDateTime).isSame(moment(session?.StartDateTime)) &&
-            moment(item.StartDateTime).add(item.Duration).isSame(moment(session?.StartDateTime).add(session?.Duration))
-        )));
+        setSessions(sessions?.filter(item => item.Uid !== session?.Uid));
     }, [sessions]);
 
     const onSessionPress = useCallback((session?: ISession) => {
         setSelectedSession(session);
     }, [sessions]);
 
-    const onEditSession = useCallback((newTime: { time: number, day: number; }, item: IData) => {
-        const StartDateTime = moment(item?.StartDateTime).day(newTime.day).set('hour', newTime.time).format('YYYY-MM-DDTHH:mm');
-        setSessions(sessions.map(session => session.Uid === item.Uid ? { ...session, StartDateTime } : session));
-        // setSelectedSession(undefined);
-    }, [sessions]);
-
     const keyExtractor = useCallback((item: string[]) => (item?.[0] || ''), []);
 
     const renderItem = useCallback(({ item, index }: { item: string[], index: number; }) => (
         <Table<ISession>
-            isEditable
             dates={item}
             data={sessionsByWeeks?.[index] || []}
             tableOffset={tableOffset}
             selectedItem={selectedSession}
             onSlotPress={onSlotPress}
-            onDelete={onDeleteSession}
-            onItemPress={onSessionPress}
-            onEdit={onEditSession}
+            onItemPress={onDeleteSession}
         />
-    ), [sessionsByWeeks, sessions, selectedSession, onSlotPress, onSessionPress, onEditSession, onDeleteSession]);
+    ), [sessionsByWeeks, sessions, selectedSession, onSlotPress, onSessionPress, onDeleteSession]);
 
     return (
         <ScreenContainer>
